@@ -7,7 +7,6 @@ https://github.com/user-attachments/assets/51a02a42-782a-4ce7-8af2-429ba9004691
 
 https://github.com/user-attachments/assets/b9fca489-1cf4-4dc2-9507-77c2a9280a08
 
-------------------------------------------------------------------------------------------```
 ## About the Project
 
 It is a simple and fun project that lets you control your computer’s system volume and mouse pointer using hand gestures. By moving your hand in front of a webcam, you can increase or decrease the volume or move the mouse around the screen. This project combines two powerful features: adjusting the volume and controlling the mouse, all without touching your computer. It's designed to give you a hands-free way to interact with your computer.
