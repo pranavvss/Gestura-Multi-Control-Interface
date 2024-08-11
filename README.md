@@ -49,4 +49,8 @@ pip install opencv-python mediapipe pycaw comtypes pyautogui numpy
 ```
 Make sure your webcam setup is ready for time we will need it.
 
+Also make sure your directory looks same 
+![image](https://github.com/user-attachments/assets/985fa8e4-26e5-45cc-9b21-5fc3d5b1a534)
+
+
 ------------------------------------------------------------------------------------------
