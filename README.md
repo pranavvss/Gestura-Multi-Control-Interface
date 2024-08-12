@@ -11,7 +11,7 @@ https://github.com/user-attachments/assets/b9fca489-1cf4-4dc2-9507-77c2a9280a08
 
 ------------------------------------------------------------------------------------------
 
-# Scrole to the bottom "TO SEE UPDATED CHANGELOGS"
+# (IMPORTANT) Scrole to the very bottom "TO SEE UPDATED FEATURES - CHANGELOGS"
 
 ------------------------------------------------------------------------------------------
 
