@@ -9,9 +9,7 @@ It is innovative application that allows users to control their computer's syste
 https://github.com/user-attachments/assets/51a02a42-782a-4ce7-8af2-429ba9004691
 
 
-
-https://github.com/user-attachments/assets/5c2bb476-37dc-4f50-a5c6-4b34c3fbaf49
-
+https://github.com/user-attachments/assets/666f121a-53fe-4caf-84aa-b46e4910ad0d
 
 
 ------------------------------------------------------------------------------------------
