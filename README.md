@@ -55,7 +55,7 @@ It is a simple and fun project that lets you control your computer’s system vo
 ## Installing libraries & Setup
 Run this command in the same powershell to install all libraries.
 
-```Python
+```Py
 pip install opencv-python mediapipe pycaw comtypes pyautogui numpy
 ```
 Make sure your webcam setup is ready for time we will need it.
