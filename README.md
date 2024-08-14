@@ -334,6 +334,9 @@ cv2.destroyAllWindows(): Closes all OpenCV windows.
 ------------------------------------------------------------------------------------------
 
 >[!NOTE]
+
 >If you like more content like this read my other documents on computer vision, python programming, openCV etc.
+
 >[Multi Stream Vision using OpenCV, 2022 updated version -  Click to read this Document](https://github.com/pranavvss/Multi-Stream-Vision-Real-Time-Object-Detection-)
+
 >[Hand and face tracking model 2022 updated version , Click to read this Document](https://github.com/pranavvss/Hand-Face-detection-model-using-python)
