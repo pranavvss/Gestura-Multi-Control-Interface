@@ -333,7 +333,7 @@ cv2.destroyAllWindows(): Closes all OpenCV windows.
 
 ------------------------------------------------------------------------------------------
 
->[!NOTE]
+> [!NOTE]
 
 >If you like more content like this read my other documents on computer vision, python programming, openCV etc.
 
