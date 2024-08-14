@@ -56,7 +56,7 @@ It is a simple and fun project that lets you control your computer’s system vo
 ## Installing libraries & Setup
 Run this command in the same powershell to install all libraries.
 
-```py
+```python
 pip install opencv-python mediapipe pycaw comtypes pyautogui numpy
 ```
 Make sure your webcam setup is ready for time we will need it.
@@ -67,3 +67,249 @@ Also make sure your directory looks same
 
 
 ------------------------------------------------------------------------------------------
+How It Works
+------------------------------------------------------------------------------------------
+
+1. Import Libraries
+   
+```python
+Copy code
+import cv2
+import numpy as np
+import HandTrackingModule as htm
+import time
+import autopy  # For controlling the mouse pointer
+from ctypes import cast, POINTER
+from comtypes import CLSCTX_ALL
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+import math
+```
+
+cv2: Used for image processing and video capture.
+numpy: Utilized for numerical operations, including interpolation.
+HandTrackingModule: A custom module for hand tracking using MediaPipe.
+autopy: Provides functions to control the mouse pointer programmatically.
+pycaw: A library for controlling system audio in Windows.
+math: Used for mathematical operations like calculating distance.
+
+------------------------------------------------------------------------------------------
+
+2. Initialize Hand Detector
+   
+```python
+Copy code
+detector = htm.HandDetector(maxHands=2)
+```
+
+HandDetector: The object detector is created from the HandDetector class in HandTrackingModule. It allows us to detect up to two hands.
+
+------------------------------------------------------------------------------------------
+
+
+3. Initialize Webcam
+
+```python
+Copy code
+cap = cv2.VideoCapture(0)
+```
+
+VideoCapture: This object captures video from the default webcam (0).
+
+
+------------------------------------------------------------------------------------------
+
+4. Get Screen Dimensions
+
+```python
+Copy code
+wScr, hScr = autopy.screen.size()
+frameR = 100  # Frame Reduction
+smoothening = 7
+plocX, plocY = 0, 0
+clocX, clocY = 0, 0
+```
+
+autopy.screen.size(): Retrieves the width and height of the screen.
+frameR: The frame reduction used to create a boundary within which the mouse movement is smoothened.
+smoothening: A factor to smoothen the mouse movement.
+plocX, plocY, clocX, clocY: Variables to store the previous and current location of the mouse pointer.
+
+
+------------------------------------------------------------------------------------------
+
+5. Initialize Pycaw for Volume Control
+
+```python
+Copy code
+devices = AudioUtilities.GetSpeakers()
+interface = devices.Activate(
+    IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+volume = cast(interface, POINTER(IAudioEndpointVolume))
+volRange = volume.GetVolumeRange()
+minVol = volRange[0]
+maxVol = volRange[1]
+vol = 0
+volBar = 400
+volPer = 0
+```
+AudioUtilities.GetSpeakers(): Retrieves the speaker device.
+IAudioEndpointVolume: Interface used to control the volume.
+volRange: The range of the system volume, used to map hand gestures to volume levels.
+
+------------------------------------------------------------------------------------------
+
+
+6. Main Loop
+
+```python
+Copy code
+while True:
+    success, img = cap.read()
+    img, handsType = detector.findHands(img)
+```
+
+cap.read(): Captures a frame from the webcam.
+detector.findHands(img): Detects hands in the frame and determines whether they are left or right hands.
+
+------------------------------------------------------------------------------------------
+
+7. Process Each Hand
+
+```python
+Copy code
+if len(handsType) > 0:
+    for i, handType in enumerate(handsType):
+        lmList = detector.findPosition(img, i)
+        if len(lmList) != 0:
+            if handType == "Right":
+                # Mouse Control
+```
+
+handsType: Contains the type of each detected hand (left or right).
+detector.findPosition(img, i): Retrieves the landmarks of the detected hand.
+
+------------------------------------------------------------------------------------------
+
+9. Mouse Control with Right Hand
+
+```python
+Copy code
+x1, y1 = lmList[8][1:]  # Index finger tip
+x2, y2 = lmList[12][1:]  # Middle finger tip
+lmList[8][1:]: The coordinates of the index finger tip.
+lmList[12][1:]: The coordinates of the middle finger tip.
+Finger State Detection
+python
+Copy code
+fingers = []
+if lmList[4][1] > lmList[3][1]:
+    fingers.append(1)
+else:
+    fingers.append(0)
+for id in range(1, 5):
+    if lmList[8 + id * 4][2] < lmList[6 + id * 4][2]:
+        fingers.append(1)
+    else:
+        fingers.append(0)
+```
+
+fingers[]: An array to determine which fingers are up.
+
+------------------------------------------------------------------------------------------
+
+10. Mouse Movement
+
+```python
+
+if fingers[1] == 1 and fingers[2] == 0:
+    x3 = np.interp(x1, (frameR, 640 - frameR), (0, wScr))
+    y3 = np.interp(y1, (frameR, 480 - frameR), (0, hScr))
+    clocX = plocX + (x3 - plocX) / smoothening
+    clocY = plocY + (y3 - plocY) / smoothening
+    autopy.mouse.move(wScr - clocX, clocY)
+    cv2.circle(img, (x1, y1), 15, (255, 0, 255), cv2.FILLED)
+    plocX, plocY = clocX, clocY
+```
+np.interp(): Maps the finger position to the screen size.
+autopy.mouse.move(): Moves the mouse pointer.
+cv2.circle(): Draws a circle on the detected finger tip.
+
+------------------------------------------------------------------------------------------
+
+11. Mouse Click
+
+```python
+Copy code
+if fingers[1] == 1 and fingers[2] == 1:
+    length = math.hypot(x2 - x1, y2 - y1)
+    if length < 40:
+        cv2.circle(img, (x1, y1), 15, (0, 255, 0), cv2.FILLED)
+        autopy.mouse.click()
+```
+
+math.hypot(): Calculates the distance between the index and middle fingers.
+autopy.mouse.click(): Performs a mouse click if the fingers are close enough.
+
+------------------------------------------------------------------------------------------
+
+12. Volume Control with Left Hand
+
+```python
+Copy code
+elif handType == "Left":
+    x1, y1 = lmList[4][1], lmList[4][2]
+    x2, y2 = lmList[8][1], lmList[8][2]
+    length = math.hypot(x2 - x1, y2 - y1)
+    vol = np.interp(length, [50, 300], [minVol, maxVol])
+    volBar = np.interp(length, [50, 300], [400, 150])
+    volPer = np.interp(length, [50, 300], [0, 100])
+    volume.SetMasterVolumeLevel(vol, None)
+    cv2.circle(img, (x1, y1), 15, (0, 255, 0), cv2.FILLED)
+```
+
+math.hypot(): Measures the distance between the thumb and index finger.
+volume.SetMasterVolumeLevel(): Adjusts the system volume based on the finger distance.
+------------------------------------------------------------------------------------------
+
+13. Volume Bar Display
+
+```python
+Copy code
+cv2.rectangle(img, (50, 150), (85, 400), (0, 255, 0), 3)
+cv2.rectangle(img, (50, int(volBar)), (85, 400), (0, 255, 0), cv2.FILLED)
+cv2.putText(img, f'{int(volPer)} %', (40, 450), cv2.FONT_HERSHEY_PLAIN,
+            1, (0, 255, 0), 3)
+```
+cv2.rectangle(): Draws the volume bar on the screen.
+cv2.putText(): Displays the current volume percentage.
+------------------------------------------------------------------------------------------
+
+14. Display the Frame
+    
+```python
+Copy code
+cv2.imshow("Image", img)
+if cv2.waitKey(1) & 0xFF == ord('q'):
+    break
+```
+
+cv2.imshow(): Displays the frame with the visualizations.
+cv2.waitKey(1): Exits the loop when 'q' is pressed.
+------------------------------------------------------------------------------------------
+
+15. Release Resources
+    
+```python
+Copy code
+cap.release()
+cv2.destroyAllWindows()
+```
+cap.release(): Releases the webcam.
+cv2.destroyAllWindows(): Closes all OpenCV windows.
+
+------------------------------------------------------------------------------------------
+
+>[!NOTE]
+>If you like more content like this read my other documents on computer vision, python programming, openCV etc.
+>[Multi Stream Vision using OpenCV, 2022 updated version -  Click to read this Document](https://github.com/pranavvss/Multi-Stream-Vision-Real-Time-Object-Detection-)
+>[Hand and face tracking model 2022 updated version , Click to read this Document](https://github.com/pranavvss/Hand-Face-detection-model-using-python)
