@@ -87,10 +87,15 @@ import math
 ```
 
 cv2: Used for image processing and video capture.
+
 numpy: Utilized for numerical operations, including interpolation.
+
 HandTrackingModule: A custom module for hand tracking using MediaPipe.
+
 autopy: Provides functions to control the mouse pointer programmatically.
+
 pycaw: A library for controlling system audio in Windows.
+
 math: Used for mathematical operations like calculating distance.
 
 ------------------------------------------------------------------------------------------
@@ -131,8 +136,11 @@ clocX, clocY = 0, 0
 ```
 
 autopy.screen.size(): Retrieves the width and height of the screen.
+
 frameR: The frame reduction used to create a boundary within which the mouse movement is smoothened.
+
 smoothening: A factor to smoothen the mouse movement.
+
 plocX, plocY, clocX, clocY: Variables to store the previous and current location of the mouse pointer.
 
 
@@ -154,8 +162,11 @@ volBar = 400
 volPer = 0
 ```
 AudioUtilities.GetSpeakers(): Retrieves the speaker device.
+
 IAudioEndpointVolume: Interface used to control the volume.
+
 volRange: The range of the system volume, used to map hand gestures to volume levels.
+
 
 ------------------------------------------------------------------------------------------
 
@@ -170,6 +181,7 @@ while True:
 ```
 
 cap.read(): Captures a frame from the webcam.
+
 detector.findHands(img): Detects hands in the frame and determines whether they are left or right hands.
 
 ------------------------------------------------------------------------------------------
@@ -187,6 +199,7 @@ if len(handsType) > 0:
 ```
 
 handsType: Contains the type of each detected hand (left or right).
+
 detector.findPosition(img, i): Retrieves the landmarks of the detected hand.
 
 ------------------------------------------------------------------------------------------
@@ -232,7 +245,9 @@ if fingers[1] == 1 and fingers[2] == 0:
     plocX, plocY = clocX, clocY
 ```
 np.interp(): Maps the finger position to the screen size.
+
 autopy.mouse.move(): Moves the mouse pointer.
+
 cv2.circle(): Draws a circle on the detected finger tip.
 
 ------------------------------------------------------------------------------------------
@@ -249,6 +264,7 @@ if fingers[1] == 1 and fingers[2] == 1:
 ```
 
 math.hypot(): Calculates the distance between the index and middle fingers.
+
 autopy.mouse.click(): Performs a mouse click if the fingers are close enough.
 
 ------------------------------------------------------------------------------------------
@@ -269,7 +285,9 @@ elif handType == "Left":
 ```
 
 math.hypot(): Measures the distance between the thumb and index finger.
+
 volume.SetMasterVolumeLevel(): Adjusts the system volume based on the finger distance.
+
 ------------------------------------------------------------------------------------------
 
 13. Volume Bar Display
@@ -282,7 +300,9 @@ cv2.putText(img, f'{int(volPer)} %', (40, 450), cv2.FONT_HERSHEY_PLAIN,
             1, (0, 255, 0), 3)
 ```
 cv2.rectangle(): Draws the volume bar on the screen.
+
 cv2.putText(): Displays the current volume percentage.
+
 ------------------------------------------------------------------------------------------
 
 14. Display the Frame
@@ -295,7 +315,9 @@ if cv2.waitKey(1) & 0xFF == ord('q'):
 ```
 
 cv2.imshow(): Displays the frame with the visualizations.
+
 cv2.waitKey(1): Exits the loop when 'q' is pressed.
+
 ------------------------------------------------------------------------------------------
 
 15. Release Resources
@@ -306,6 +328,7 @@ cap.release()
 cv2.destroyAllWindows()
 ```
 cap.release(): Releases the webcam.
+
 cv2.destroyAllWindows(): Closes all OpenCV windows.
 
 ------------------------------------------------------------------------------------------
